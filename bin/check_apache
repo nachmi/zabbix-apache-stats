@@ -134,17 +134,13 @@ def parse(data, version):
         # First remove server name on first line
         data = data.splitlines(False)
         data = data[1:]
-        # Then remove lines with dates (and more than : delimiter in it)
-        lines=[]
-        for l in data:
-            if l.startswith('Server Built'):
-                continue
-            if l.startswith('CurrentTime'):
-                continue
-            if l.startswith('RestartTime'):
-                continue
-            lines.append(l)
-        data = "\n".join(lines)
+        stats = ["BytesPerSec CPULoad", "BusyWorkers", "ReqPerSec", "BytesPerReq", "Scoreboard"]
+        _data = []
+        for item in data:
+            for i in stats:
+                if i in item:
+                    _data.append(item)
+        data = "\n".join(_data)
     # Clean out certain chars
     replace = '() '
     csvobj = csv.reader(StringIO.StringIO(data), delimiter = ":", skipinitialspace = True)
